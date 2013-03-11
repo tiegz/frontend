@@ -116,9 +116,24 @@ RSpec.configure do |config|
           with (scope('BountySource')) {
             define('_original_#{method}', #{method});
             define('#{method}', function() {
-              var arguments = flatten_to_array(arguments);
-              var callback = shift_callback_from_args(arguments);
-              callback({ data: #{options[:data].to_json}, meta: { status: #{status}, success: #{success} } });
+              var response = { data: #{options[:data].to_json}, meta: { status: #{status}, success: #{success} } };
+              // parse the URL string from the function
+              var url_str = BountySource._original_#{method}.toString().match(/api.([^\,]+)\,/)[1].replace(/[',",\s]/g, '');
+
+              // match the argument patterns
+              var url_arguments = url_str.match(/(\\\+[^+\/]+)/g);
+              if(url_arguments) {
+                // replace argument into the url string
+                for(var i = 0; i < url_arguments.length; i++) {
+                  url_str = url_str.replace(url_arguments[i], arguments[i]);
+                }
+              }
+
+              url_str = url_str.replace(/\\\+/g, '');
+
+              // save the mock response for each generated url
+              scope.jsonp_mock_responses[url_str] = response;
+              BountySource._original_#{method}.apply(this, arguments);
             });
           }
         )
