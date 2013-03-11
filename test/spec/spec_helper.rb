@@ -1,94 +1,25 @@
 require "bundler"
 require "ostruct"
 Bundler.require
+Dir[File.dirname(__FILE__) + "/supports/**/*.rb"].each {|f| require f}
 
 CREDENTIALS = YAML.load_file(File.expand_path('../../config/credentials.yml', __FILE__))
+MOCK_API = ENV['MOCK_API'] || true
 
 if ENV['RAILS_ENV'] == 'staging'
   BASE_URL = 'https://www-qa.bountysource.com/'
   API_ENDPOINT = 'qa'
   DEMO_MODE = false
 else
-  BASE_URL = 'https://www-qa.bountysource.com/'
-  API_ENDPOINT = 'qa'
-  #BASE_URL = 'http://www.bountysource.dev/'
-  #API_ENDPOINT = 'dev'
+  # BASE_URL = 'https://www-qa.bountysource.com/'
+  # API_ENDPOINT = 'qa'
+  BASE_URL = if MOCK_API
+    'file://' + File.expand_path('../../../test.html', __FILE__)
+  else
+    'http://www.bountysource.dev'
+  end
+  API_ENDPOINT = 'dev'
   DEMO_MODE = false
-end
-
-
-def proceed_through_paypal_sandbox_flow!
-  # log in to master account if necessary
-  @browser.a(text: /(PayPal Sandbox|User Agreement)/).wait_until_present
-  if @browser.a(text: 'PayPal Sandbox').present?
-    url = @browser.url
-
-    master_credentials = CREDENTIALS["paypal"]["master"]
-    @browser.goto "https://developer.paypal.com/"
-    @browser.input(id: 'login_email').wait_until_present
-    @browser.input(id: 'login_email').send_keys(master_credentials["email"])
-    @browser.input(id: 'login_password').send_keys(master_credentials["password"])
-    @browser.button(value: 'Log In').click
-    @browser.a(text: 'preconfigured account').wait_until_present
-
-    @browser.goto(url)
-  end
-
-  if @browser.button(name: 'login_button').present?
-    @browser.button(name: 'login_button').click
-  end
-
-
-  @buyer_credentials = CREDENTIALS["paypal"]["buyer"]
-
-  @browser.text_field(id: 'login_email').wait_until_present
-  @browser.text_field(id: 'login_email').set(@buyer_credentials["email"])
-  @browser.text_field(id: 'login_password').set(@buyer_credentials["password"])
-  @browser.button(id: 'submitLogin').click
-
-  @browser.checkbox(id: 'esignOpt').wait_until_present
-  sleep 1
-  @browser.checkbox(id: 'esignOpt').click
-  @browser.button(id: 'agree').click
-
-  @browser.button(id: 'continue_abovefold').wait_until_present
-  sleep 1
-  @browser.button(id: 'continue_abovefold').click
-
-  @browser.button(name: 'merchant_return_link').wait_until_present
-  sleep 1
-  @browser.button(name: 'merchant_return_link').click
-
-  Watir::Wait.until { @browser.execute_script("return (typeof(scope) != 'undefined') && scope.instance && scope.instance.initializer && (typeof(scope.__initializers) == 'undefined')") }
-end
-
-def login_with_email!
-  return if @browser.div(id: 'user-nav').present?
-
-  @bountysource_credentials = CREDENTIALS["bountysource"]
-
-  @browser.goto "#signin/email"
-
-  # login with email and password
-  @browser.text_field(name: 'email').set(@bountysource_credentials["email"])
-  @browser.text_field(name: 'password').set(@bountysource_credentials["password"])
-  @browser.div(text: /Email address found/).wait_until_present
-  @browser.button(value: 'Sign In').click
-  @browser.div(id: 'user-nav').wait_until_present
-end
-
-def login_with_github!
-  @browser.goto 'https://github.com/login' unless @browser.url.start_with?('https://github.com/login')
-
-  if @browser.url.start_with?('https://github.com/login')
-    github_credentials = CREDENTIALS["github"]
-    @browser.text_field(id: 'login_field').set(github_credentials["username"])
-    @browser.text_field(id: 'password').set(github_credentials["password"])
-    @browser.button(value: 'Sign in').click
-
-    # auto authorize
-    @browser.button(text: 'Authorize app').click if @browser.button(text: 'Authorize app').present?
-  end
 end
 
 # matches money.
@@ -102,6 +33,20 @@ RSpec::Matchers.define :match_money do |value|
 end
 
 RSpec.configure do |config|
+  config.before(:all) do
+    if MOCK_API
+      # inject mock_api.js to mock out all API calls
+      cmd = 'sed "s/<\/head>/<script src=\"test\/javascripts\/mock_api.js\"><\/script><\/head>/g" ' + File.dirname(__FILE__) + '/../../index.html > ' + File.dirname(__FILE__) + '/../../test.html'
+      `#{cmd}`
+    end
+  end
+
+  config.after(:all) do
+    if MOCK_API
+      # remove test html file
+      `rm -f #{File.dirname(__FILE__) + '/../../test.html'}`
+    end
+  end
   config.before(:suite) do
     user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.56 Safari/537.17 Selenium'
     if ENV['RAILS_ENV'] == 'staging'
@@ -132,7 +77,7 @@ RSpec.configure do |config|
           goto_without_scope("#{BASE_URL}#{route}")
         end
 
-        if BASE_URL =~ /bountysource\.dev/ && route =~ /^#/
+        if ((MOCK_API && BASE_URL =~ /test\.html/) || (MOCK_API && BASE_URL =~/bountysource\.dev/)) && route =~ /^#/
           $browser.div(id: 'dev-bar').wait_until_present
           if $browser.div(id: 'dev-bar').a(text: API_ENDPOINT).exists?
             $browser.div(id: 'dev-bar').a(text: API_ENDPOINT).click
@@ -161,9 +106,11 @@ RSpec.configure do |config|
 
       # override an API method. results of block will be passed as response.data
       def override_api_response_data(method, options={})
-        success = options[:success].nil? ? true : options[:success]
+        return unless MOCK_API
+
         # if not status provided, use success to make it 200 or 400
-        status  = options[:status].nil? ? (success ? 200 : 400) : options[:status]
+        status  = options[:status].nil? ? 200 : options[:status]
+        success = options[:success].nil? ? true && status == 200 : options[:success]
 
         execute_scopejs_script %(
           with (scope('BountySource')) {
