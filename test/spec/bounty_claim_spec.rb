@@ -63,63 +63,42 @@ describe "Claiming a Bounty" do
   end
 
   describe "solutions" do
-    it "should show a 'claim bounty' button when developer's solution is accepted and dispute period is over" do
+    let(:row) { @browser.table(id: 'solutions-table').rows[1] }
+    before do
       login_with_email!
 
       # mock the user info api call to return an accepted solution
-      @browser.override_api_response_data :get_solutions, data: [factory(:accepted_solution)]
-      @browser.override_api_response_data :get_solution, data: factory(:accepted_solution)
+      @browser.override_api_response_data :get_solutions, data: [solution]
+      @browser.override_api_response_data :get_solution, data: solution
       @browser.goto "#solutions"
 
       @browser.table(id: 'solutions-table').wait_until_present
-      row = @browser.table(id: 'solutions-table').rows[1]
-      row.text.should match /Accepted/i
+      row.text.should match(expected)
       row.click
-
-      @browser.button(text: 'Payout!').wait_until_present
-
-      # unmock the user info api call
-      @browser.restore_api_method :get_solutions, :get_solution
     end
 
-    it "should show 'Solution Submitted!' when solution is in dispute period" do
-      login_with_email!
-
-      # mock the user info api call to return an accepted solution
-      @browser.override_api_response_data :get_solutions, success: true, data: [factory(:submitted_solution)]
-      @browser.override_api_response_data :get_solution, success: true, data: factory(:submitted_solution)
-
-      @browser.goto "#solutions"
-
-      @browser.table(id: 'solutions-table').wait_until_present
-      row = @browser.table(id: 'solutions-table').rows[1]
-      row.text.should match /In Dispute Period/i
-      row.click
-
-      @browser.h2(text: 'Solution Submitted!').wait_until_present
-
-      # unmock the user info api call
-      @browser.restore_api_method :get_solutions, :get_solution
+    describe 'accepted' do
+      let(:solution) { factory(:accepted_solution) }
+      let(:expected) { /Accepted/i }
+      it "should show a 'Payout' button" do
+        @browser.button(text: 'Payout!').wait_until_present
+      end
     end
 
-    it "should show 'disputed' message if the solution is being disputed" do
-      login_with_email!
+    describe 'submitted' do
+      let(:solution) { factory(:submitted_solution) }
+      let(:expected) { /In Dispute Period/i }
+      it "should show 'Solution Submitted!'" do
+        @browser.h2(text: 'Solution Submitted!').wait_until_present
+      end
+    end
 
-      # mock the user info api call to return an accepted solution
-      @browser.override_api_response_data :get_solutions, success: true, data: [factory(:disputed_solution)]
-      @browser.override_api_response_data :get_solution, success: true, data: factory(:disputed_solution)
-
-      @browser.goto "#solutions"
-
-      @browser.table(id: 'solutions-table').wait_until_present
-      row = @browser.table(id: 'solutions-table').rows[1]
-      row.text.should match /Accepted/i
-      row.click
-
-      @browser.text.should match(/Solution has not yet been accepted./)
-
-      # unmock the user info api call
-      @browser.restore_api_method :get_solutions, :get_solution
+    describe 'disputed' do
+      let(:solution) { factory(:disputed_solution) }
+      let(:expected) { /Accepted/i }
+      it "should show 'disputed' message if the solution is being disputed" do
+        @browser.text.should match(/Solution has not yet been accepted./)
+      end
     end
   end
 end
