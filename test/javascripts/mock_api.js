@@ -187,3 +187,9 @@ with (scope('BountySource')) {
 
   });
 }
+
+with (scope('Fundraiser', 'App')) {
+  define('belongs_to', function(person) {
+    return logged_in() && person;
+  });
+}

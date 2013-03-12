@@ -4,10 +4,8 @@ describe "Fundraiser Pledges" do
   describe "create" do
     before do
       login_with_email!
-      @browser.override_api_response_data("get_more_cards", data: factory(:cards))
       @browser.override_api_response_data("get_fundraiser", data: factory(:fundraiser))
       @browser.override_api_response_data("get_pledge", data: factory(:pledge))
-
       @browser.goto "#"
     end
 

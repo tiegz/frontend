@@ -81,9 +81,11 @@ FACTORIES = {
     created_at: "2013-03-01T02:35:26Z",
     days_open: 90,
     days_remaining: 86,
+    description: "This is the description",
     description_html: "<p>This is the description</p>",
     featured: true,
     frontend_path: "#fundraisers/8-qa-fr",
+    frontend_edit_path: "#fundraisers/8/edit",
     frontend_url: "http://www.bountysource.dev/#fundraisers/8-qa-fr",
     funding_goal: 20000,
     homepage_url: "",
@@ -134,6 +136,25 @@ FACTORIES = {
     short_description: "This is the basic info",
     title: "QA FR",
     total_pledged: "10.0",
+  },
+  unpublished_fundraiser: {
+    parent: :fundraiser,
+    published: false
+  },
+  reward: {
+    amount: 10,
+    claimed: 1,
+    created_at: "2013-03-01T02:36:14Z",
+    delivered_at: nil,
+    description: "I will sign your chest",
+    fulfillment_details: "You will have a voucher with detailed info",
+    fundraiser_id: 8,
+    id: 15,
+    limited_to: 10,
+    sold_out: false,
+    timezone: nil,
+    updated_at: "2013-03-01T04:08:18Z",
+    vanity_url: nil
   },
   pledge: {
     amount: "10.0",
