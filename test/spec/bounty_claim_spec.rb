@@ -1,6 +1,9 @@
 require 'spec_helper'
 
 describe "Claiming a Bounty" do
+  before do
+    @browser.goto '#'
+  end
   it "should find a bounty on the home page" do
     bounty_card = nil
     @browser.div(class: 'card').wait_until_present
@@ -13,227 +16,88 @@ describe "Claiming a Bounty" do
     bounty_card.should_not be_nil
   end
 
-  it "should be able to get to #bounties from home page when logged in" do
-    login_with_email!
-
-    @browser.button(text: 'Browse All Bounties').when_present.click
-
-    @browser.url.should =~ /#bounties/
-    @browser.div(class: 'stats').wait_until_present
-  end
-
   it "should find a large bounty on #bounties" do
+    @browser.override_api_response_data :overview, data: factory(:bounties)
     @browser.goto "#bounties"
     @browser.div(class: 'stats').wait_until_present
 
     # select a link from the table after featured projects, which contains issues
-    issue_links = @browser.tables[1].links.select { |l| l.href =~ /#repos\/\w+\/\w+\/issues\/\d+$/ }
-
+    issue_links = @browser.links.select { |l| l.href =~ /#issues\/\d+/ }
     # goto_route instead of .click because it sometimes doesn't scroll enough and chatbar gets the click
-    @browser.goto '#'+issue_links.sample.href.split('#').last
+    @browser.goto '#'+issue_links.sample.href
 
-    @browser.url.should =~ /#repos\/\w+\/\w+\/issues\/\d+$/
+    @browser.url.should =~ /#issues\/\d+/
   end
 
-  it "should see a list of pull requests after logging in" do
-    @browser.goto '#repos/coryboyd/bs-test/issues/18'
+  describe 'pull request' do
+    before do
+      login_with_email!
+    end
+    it "should see a list of pull requests after logging in" do
+      @browser.override_api_response_data :get_repository_overview, data: factory(:tracker)
 
-    # not yet logged in, so a github login button should be present
-    @browser.a(text: 'Link with GitHub').when_present.click
+      @browser.goto '#trackers/4-coryboyd-bs-test'
 
-    @browser.span(id: 'user_nav_name').wait_until_present
+      @browser.span(id: 'user_nav_name').wait_until_present
 
-    @browser.override_api_response_data :get_pull_requests, success: true, data: [
-      {
-        bounty_total: 10,
-        comments: 0,
-        number: 1,
-        repository: { full_name: 'bountysource/frontend' },
-        user: { login: 'bountysource' },
-        login: 'bountysource'
-      }
-    ]
+      @browser.override_api_response_data(:get_issue, data: factory(:issue))
+      @browser.override_api_response_data :get_solutions, data: factory(:solutions)
+      @browser.goto '#issues/8-test-issue-omg'
 
-    @browser.goto '#repos/coryboyd/bs-test/issues/18'
-    @browser.select(name: 'pull_request_number').wait_until_present
+      @browser.span(id: 'user_nav_name').wait_until_present
 
-    @browser.restore_api_method :get_pull_requests
+      @browser.override_api_response_data :create_solution, data: factory(:solution)
+      @browser.override_api_response_data :get_solution, data: factory(:solution)
+      @browser.a(text: "Start Work").when_present.click
+      @browser.h2(text: "Started a Solution").wait_until_present
+
+      @browser.text_field(name: 'code_url').set("https://github.com/bountysource/frontend/pull/2 ")
+      @browser.textarea(name: 'body').set("This is a pull request")
+
+      @browser.override_api_response_data :submit_solution, data: {}
+      @browser.restore_api_method(:get_solution)
+      @browser.override_api_response_data :get_solution, data: factory(:submitted_solution)
+      @browser.input(value: 'Submit Code').click
+
+      @browser.h2(text: "Solution Submitted!").wait_until_present
+    end
   end
 
   describe "solutions" do
-    before(:each) do
-      @solution = {
-        id: 1,
-        bounty_source_tax: 0.1,
-        accepted: false,
-        pull_request: {
-          merged_at: nil,
-          mergeable: false,
-          merged: false
-        },
-        disputed: false,
-        accepted_at: nil,
-        created_at: DateTime.now,
-        in_dispute_period: false,
-        issue: {
-          number: 1,
-          title: "Test issue",
-          body: "This is a test, please ignore",
-          account_balance: 100,
-          bounty_total: 100,
-          closed: false,
-          comment_count: 12,
-          repository: {
-            project_tax: 0.1,
-            owner: {
-              avatar_url: "images/github.png",
-              login: "test"
-            },
-            full_name: "test/test",
-            display_name: "Test",
-            languages: [{ name: 'ruby', bytes: 1337 }]
-          }
-        }
-      }
-
-      @accepted_solution = {
-        id: 1,
-        bounty_source_tax: 0.1,
-        accepted: true,
-        pull_request: {
-          merged_at: DateTime.now,
-          mergeable: true,
-          merged: true
-        },
-        disputed: false,
-        accepted_at: DateTime.now,
-        created_at: DateTime.now,
-        in_dispute_period: false,
-        issue: {
-          number: 1,
-          title: "Test issue",
-          body: "This is a test, please ignore",
-          account_balance: 100,
-          bounty_total: 100,
-          closed: true,
-          comment_count: 12,
-          repository: {
-            project_tax: 0.1,
-            owner: {
-              avatar_url: "images/github.png",
-              login: "test"
-            },
-            full_name: "test/test",
-            display_name: "Test",
-            languages: [{ name: 'ruby', bytes: 1337 }]
-          }
-        }
-      }
-
-      @in_dispute_period_solution = {
-        id: 1,
-        bounty_source_tax: 0.1,
-        accepted: true,
-        pull_request: {
-          merged_at: DateTime.now,
-          mergeable: true,
-          merged: true
-        },
-        disputed: false,
-        accepted_at: DateTime.now,
-        created_at: DateTime.now,
-        in_dispute_period: true,
-        issue: {
-          number: 1,
-          title: "Test issue",
-          body: "This is a test, please ignore",
-          account_balance: 100,
-          bounty_total: 100,
-          closed: true,
-          comment_count: 12,
-          repository: {
-            project_tax: 0.1,
-            owner: {
-              avatar_url: "images/github.png",
-              login: "test"
-            },
-            full_name: "test/test",
-            display_name: "Test",
-            languages: [{ name: 'ruby', bytes: 1337 }]
-          }
-        }
-      }
-
-      @disputed_solution = {
-        id: 1,
-        bounty_source_tax: 0.1,
-        accepted: true,
-        pull_request: {
-          merged_at: DateTime.now,
-          mergeable: true,
-          merged: true
-        },
-        disputed: true,
-        accepted_at: DateTime.now,
-        created_at: DateTime.now,
-        in_dispute_period: false,
-        issue: {
-          number: 1,
-          title: "Test issue",
-          body: "This is a test, please ignore",
-          account_balance: 100,
-          bounty_total: 100,
-          closed: true,
-          comment_count: 12,
-          repository: {
-            project_tax: 0.1,
-            owner: {
-              avatar_url: "images/github.png",
-              login: "test"
-            },
-            full_name: "test/test",
-            display_name: "Test",
-            languages: [{ name: 'ruby', bytes: 1337 }]
-          }
-        }
-      }
-    end
-
     it "should show a 'claim bounty' button when developer's solution is accepted and dispute period is over" do
       login_with_email!
 
       # mock the user info api call to return an accepted solution
-      @browser.override_api_response_data :get_solutions, success: true, data: [@accepted_solution]
-      @browser.override_api_response_data :get_solution, success: true, data: @accepted_solution
-
+      @browser.override_api_response_data :get_solutions, data: [factory(:accepted_solution)]
+      @browser.override_api_response_data :get_solution, data: factory(:accepted_solution)
       @browser.goto "#solutions"
 
-      @browser.table(class: 'solutions').wait_until_present
-      row = @browser.table(class: 'solutions').rows[1]
-      row.text.should match /Accepted!/i
+      @browser.table(id: 'solutions-table').wait_until_present
+      row = @browser.table(id: 'solutions-table').rows[1]
+      row.text.should match /Accepted/i
       row.click
 
-      @browser.a(text: 'Claim Bounty').wait_until_present
+      @browser.button(text: 'Payout!').wait_until_present
 
       # unmock the user info api call
       @browser.restore_api_method :get_solutions, :get_solution
     end
 
-    it "should show 'in dispute period' message when pull request merged and in dispute period" do
+    it "should show 'Solution Submitted!' when solution is in dispute period" do
       login_with_email!
 
       # mock the user info api call to return an accepted solution
-      @browser.override_api_response_data :get_solutions, success: true, data: [@in_dispute_period_solution]
-      @browser.override_api_response_data :get_solution, success: true, data: @in_dispute_period_solution
+      @browser.override_api_response_data :get_solutions, success: true, data: [factory(:submitted_solution)]
+      @browser.override_api_response_data :get_solution, success: true, data: factory(:submitted_solution)
 
       @browser.goto "#solutions"
 
-      @browser.table(class: 'solutions').wait_until_present
-      row = @browser.table(class: 'solutions').rows[1]
+      @browser.table(id: 'solutions-table').wait_until_present
+      row = @browser.table(id: 'solutions-table').rows[1]
       row.text.should match /In Dispute Period/i
       row.click
 
-      @browser.p(text: 'Solution has been merged, but is in the dispute period.').wait_until_present
+      @browser.h2(text: 'Solution Submitted!').wait_until_present
 
       # unmock the user info api call
       @browser.restore_api_method :get_solutions, :get_solution
@@ -243,18 +107,17 @@ describe "Claiming a Bounty" do
       login_with_email!
 
       # mock the user info api call to return an accepted solution
-      @browser.mock_api!
-      @browser.override_api_response_data :get_solutions, success: true, data: [@disputed_solution]
-      @browser.override_api_response_data :get_solution, success: true, data: @disputed_solution
+      @browser.override_api_response_data :get_solutions, success: true, data: [factory(:disputed_solution)]
+      @browser.override_api_response_data :get_solution, success: true, data: factory(:disputed_solution)
 
       @browser.goto "#solutions"
 
-      @browser.table(class: 'solutions').wait_until_present
-      row = @browser.table(class: 'solutions').rows[1]
-      row.text.should match /Disputed/i
+      @browser.table(id: 'solutions-table').wait_until_present
+      row = @browser.table(id: 'solutions-table').rows[1]
+      row.text.should match /Accepted/i
       row.click
 
-      @browser.p(text: 'Solution has been disputed, and is currently under review.').wait_until_present
+      @browser.text.should match(/Solution has not yet been accepted./)
 
       # unmock the user info api call
       @browser.restore_api_method :get_solutions, :get_solution

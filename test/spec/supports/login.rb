@@ -12,7 +12,6 @@ def login_with_email!
   @browser.div(text: /Email address found/).wait_until_present
   @browser.button(value: 'Sign In').click
   @browser.div(id: 'user-nav').wait_until_present
-  @browser.mock_api!
 end
 
 def login_with_github!

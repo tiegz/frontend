@@ -226,18 +226,304 @@ FACTORIES = {
       },
       url: "https://github.com/coryboyd/bs-test/issues/18"
     }
-  }
+  },
+  bounties: {
+    backers: {
+      most_issues_backed: [
+        {
+          display_name: "Bob",
+        }
+      ],
+      most_total_bounties: [
+        {
+          created_at: "2013-02-19T05:07:09Z",
+          display_name: "john.doe",
+          first_name: "John",
+          frontend_path: "#users/1-john-doe",
+          id: 1,
+          image_url: "https://a248.e.akamai.net/assets.github.com/images/gravatars/gravatar-user-420.png",
+          last_name: "Doe",
+          slug: "1-john-doe"
+        }
+      ]
+    },
+    distinct_backers_count: 2,
+    fundraisers: {},
+    issues: {
+      featured: [],
+      largest_bounties: [
+        {
+          author_image_url: "https://secure.gravatar.com/avatar/89f133b618e8530d78bf1dc59c5f7dd3?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png",
+          author_name: "thailehuy",
+          bounty_total: "25.0",
+          can_add_bounty: true,
+          comment_count: 0,
+          created_at: "2013-02-21T04:40:50Z",
+          featured: false,
+          frontend_path: "#issues/7-testing",
+          id: 7,
+          number: 1,
+          short_body: "Issue testing",
+          slug: "7-testing",
+          title: "Testing",
+          tracker: {
+            bounty_total: "25.0",
+            description: "This is the place to fetch blog post and display them",
+            featured: false,
+            forks: 0,
+            frontend_path: "#trackers/3-thailehuy-hblog",
+            frontend_url: "http://www.bountysource.dev/#trackers/3-thailehuy-hblog",
+            id: 3,
+            image_url: "https://secure.gravatar.com/avatar/89f133b618e8530d78bf1dc59c5f7dd3?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png",
+            languages: [],
+            name: "Thailehuy Hblog",
+            slug: "3-thailehuy-hblog",
+            url: "https://github.com/thailehuy/hblog",
+            watchers: 0
+          },
+          url: "https://github.com/thailehuy/hblog/issues/1"
+        }
+      ],
+      newest: [
+        {
+          author_image_url: "https://secure.gravatar.com/avatar/89f133b618e8530d78bf1dc59c5f7dd3?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png",
+          author_name: "thailehuy",
+          bounty_total: "25.0",
+          can_add_bounty: true,
+          comment_count: 0,
+          created_at: "2013-02-21T04:40:50Z",
+          featured: false,
+          frontend_path: "#issues/7-testing",
+          id: 7,
+          number: 1,
+          short_body: "Issue testing",
+          slug: "7-testing",
+          title: "Testing",
+          tracker: {
+            bounty_total: "25.0",
+            description: "This is the place to fetch blog post and display them",
+            featured: false,
+            forks: 0,
+            frontend_path: "#trackers/3-thailehuy-hblog",
+            frontend_url: "http://www.bountysource.dev/#trackers/3-thailehuy-hblog",
+            id: 3,
+            image_url: "https://secure.gravatar.com/avatar/89f133b618e8530d78bf1dc59c5f7dd3?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png",
+            languages: [],
+            name: "Thailehuy Hblog",
+            slug: "3-thailehuy-hblog",
+            url: "https://github.com/thailehuy/hblog",
+            watchers: 0
+          },
+          url: "https://github.com/thailehuy/hblog/issues/1"
+        }
+      ],
+      popular: [
+        {
+          author_image_url: "https://secure.gravatar.com/avatar/89f133b618e8530d78bf1dc59c5f7dd3?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png",
+          author_name: "thailehuy",
+          bounty_total: "25.0",
+          can_add_bounty: true,
+          comment_count: 0,
+          created_at: "2013-02-21T04:40:50Z",
+          featured: false,
+          frontend_path: "#issues/7-testing",
+          id: 7,
+          number: 1,
+          short_body: "Issue testing",
+          slug: "7-testing",
+          title: "Testing",
+          tracker: {
+            bounty_total: "25.0",
+            description: "This is the place to fetch blog post and display them",
+            featured: false,
+            forks: 0,
+            frontend_path: "#trackers/3-thailehuy-hblog",
+            frontend_url: "http://www.bountysource.dev/#trackers/3-thailehuy-hblog",
+            id: 3,
+            image_url: "https://secure.gravatar.com/avatar/89f133b618e8530d78bf1dc59c5f7dd3?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png",
+            languages: [],
+            name: "Thailehuy Hblog",
+            slug: "3-thailehuy-hblog",
+            url: "https://github.com/thailehuy/hblog",
+            watchers: 0
+          },
+          url: "https://github.com/thailehuy/hblog/issues/1"
+        }
+      ]
+    },
+    largest_unclaimed: {},
+    most_bounteous_issue_total: 25,
+    projects: {},
+    total_active_bounties: 2,
+    total_active_issues: 2,
+    total_bounties_created_this_month: 1,
+    total_paid_last_month: 0,
+    total_paid_this_month: 0,
+    total_paid_to_date: 0,
+    total_unclaimed: 26
+  },
+  tracker: {
+    bounty_total: "1.0",
+    description: "This is a test repository, please politely ignore it.",
+    featured: false,
+    forks: 3,
+    frontend_path: "#trackers/4-coryboyd-bs-test",
+    frontend_url: "http://www.bountysource.dev/#trackers/4-coryboyd-bs-test",
+    id: 4,
+    image_url: "https://secure.gravatar.com/avatar/de5ddecd975db4d548ebac94210423ff?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png",
+    issues_featured: [],
+    issues_newest: [],
+    issues_popular: [],
+    issues_valuable: [],
+    languages: [],
+    name: "Coryboyd Bs-Test",
+    slug: "4-coryboyd-bs-test",
+    url: "https://github.com/coryboyd/bs-test",
+    watchers: 0
+  },
+  solution: {
+    accepted: false,
+    accepted_at: nil,
+    body: nil,
+    code_url: nil,
+    created_at: "2013-03-12T03:19:36Z",
+    dispute_period_end_date: nil,
+    frontend_path: "#solutions/4",
+    frontend_url: "http://www.bountysource.dev/#solutions/4",
+    id: 4,
+    issue: {
+      author_image_url: "https://secure.gravatar.com/avatar/89f133b618e8530d78bf1dc59c5f7dd3?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png",
+      author_name: "thailehuy",
+      bounty_total: "25.0",
+      can_add_bounty: true,
+      comment_count: 0,
+      created_at: "2013-02-21T04:40:50Z",
+      featured: false,
+      frontend_path: "#issues/7-testing",
+      id: 7,
+      number: 1,
+      short_body: "Issue testing",
+      slug: "7-testing",
+      title: "Testing",
+      tracker: {
+        bounty_total: "25.0",
+        description: "This is the place to fetch blog post and display them",
+        featured: false,
+        forks: 0,
+        frontend_path: "#trackers/3-thailehuy-hblog",
+        frontend_url: "http://www.bountysource.dev/#trackers/3-thailehuy-hblog",
+        id: 3,
+        image_url: "https://secure.gravatar.com/avatar/89f133b618e8530d78bf1dc59c5f7dd3?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png",
+        languages: [],
+        name: "Thailehuy Hblog",
+        slug: "3-thailehuy-hblog",
+        url: "https://github.com/thailehuy/hblog",
+        watchers: 0
+      },
+      url: "https://github.com/thailehuy/hblog/issues/1"
+    },
+    paid_out: false,
+    person: {
+      created_at: "2013-03-01T04:05:07Z",
+      display_name: "thailehuy",
+      first_name: "HuyT",
+      frontend_path: "#users/9-thailehuy",
+      id: 9,
+      image_url: "https://secure.gravatar.com/avatar/89f133b618e8530d78bf1dc59c5f7dd3?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png",
+      last_name: "HuyT",
+      slug: "9-thailehuy"
+    },
+    submitted: false,
+    submitted_at: nil,
+    updated_at: "2013-03-12T03:19:36Z"
+  },
+  submitted_solution: {
+    parent: :solution,
+    in_dispute_period: true,
+    disputed: false,
+    submitted: true
+  },
+  accepted_solution: {
+    parent: :solution,
+    submitted: true,
+    accepted: true
+  },
+  disputed_solution: {
+    parent: :solution,
+    submitted: true,
+    accepted: true,
+    disputed: true
+  },
+  solutions: [
+    {
+      accepted: false,
+      accepted_at: nil,
+      body: nil,
+      code_url: nil,
+      created_at: "2013-03-12T03:19:36Z",
+      dispute_period_end_date: nil,
+      frontend_path: "#solutions/4",
+      frontend_url: "http://www.bountysource.dev/#solutions/4",
+      id: 4,
+      issue: {
+        author_image_url: "https://secure.gravatar.com/avatar/89f133b618e8530d78bf1dc59c5f7dd3?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png",
+        author_name: "thailehuy",
+        bounty_total: "25.0",
+        can_add_bounty: true,
+        comment_count: 0,
+        created_at: "2013-02-21T04:40:50Z",
+        featured: false,
+        frontend_path: "#issues/7-testing",
+        id: 7,
+        number: 1,
+        short_body: "Issue testing",
+        slug: "7-testing",
+        title: "Testing",
+        tracker: {
+          bounty_total: "25.0",
+          description: "This is the place to fetch blog post and display them",
+          featured: false,
+          forks: 0,
+          frontend_path: "#trackers/3-thailehuy-hblog",
+          frontend_url: "http://www.bountysource.dev/#trackers/3-thailehuy-hblog",
+          id: 3,
+          image_url: "https://secure.gravatar.com/avatar/89f133b618e8530d78bf1dc59c5f7dd3?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png",
+          languages: [],
+          name: "Thailehuy Hblog",
+          slug: "3-thailehuy-hblog",
+          url: "https://github.com/thailehuy/hblog",
+          watchers: 0
+        },
+        url: "https://github.com/thailehuy/hblog/issues/1"
+      },
+      paid_out: false,
+      person: {
+        created_at: "2013-03-01T04:05:07Z",
+        display_name: "thailehuy",
+        first_name: "HuyT",
+        frontend_path: "#users/9-thailehuy",
+        id: 9,
+        image_url: "https://secure.gravatar.com/avatar/89f133b618e8530d78bf1dc59c5f7dd3?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png",
+        last_name: "HuyT",
+        slug: "9-thailehuy"
+      },
+      submitted: false,
+      submitted_at: nil,
+      updated_at: "2013-03-12T03:19:36Z",
+    }
+  ]
 }
 
 def factory(model, count = 1)
   result = count.times.map do |i|
     attrs = FACTORIES[model.to_sym]
-    attrs.merge!(id: attrs[:id] + count - 1) if attrs[:id]
-    if attrs[:parent]
-      attrs.merge!(factory(attrs[:parent]))
-    else
-      attrs
+    if attrs.is_a?(Hash)
+      attrs.merge!(id: attrs[:id] + count - 1) if attrs[:id]
+      parent = attrs[:parent]
+
+      attrs = factory(parent).merge(attrs) if parent
     end
+    attrs
   end
 
   count == 1 ? result.first : result

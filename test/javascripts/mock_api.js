@@ -13,6 +13,16 @@ with (scope('JSONP')) {
   });
 }
 
+var Storage = {
+  dataHash: {},
+  get: function(key) {
+    return dataHash[key];
+  },
+  set: function(key, data) {
+    dataHash[key] = data
+  }
+}
+
 with (scope('BountySource')) {
   define('_original_api', api);
   // parse arguments: url, [http_method], [params], [callback]
@@ -171,5 +181,9 @@ with (scope('BountySource')) {
       meta: {success: true, status: 200}
     }
     callback(response)
+  });
+
+  define('get_friends_activity', function(callback) {
+
   });
 }
