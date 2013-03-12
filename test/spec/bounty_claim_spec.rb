@@ -55,7 +55,6 @@ describe "Claiming a Bounty" do
       @browser.textarea(name: 'body').set("This is a pull request")
 
       @browser.override_api_response_data :submit_solution, data: {}
-      @browser.restore_api_method(:get_solution)
       @browser.override_api_response_data :get_solution, data: factory(:submitted_solution)
       @browser.input(value: 'Submit Code').click
 

@@ -107,7 +107,7 @@ RSpec.configure do |config|
       # override an API method. results of block will be passed as response.data
       def override_api_response_data(method, options={})
         return unless MOCK_API
-
+        restore_api_method(method) # restore before re-mock
         # if not status provided, use success to make it 200 or 400
         status  = options[:status].nil? ? 200 : options[:status]
         success = options[:success].nil? ? true && status == 200 : options[:success]
@@ -144,8 +144,10 @@ RSpec.configure do |config|
         methods.each do |method|
           execute_scopejs_script %(
             with (scope('BountySource')) {
-              define('#{method.to_s}', _original_#{method.to_s});
-              delete BountySource._original_#{method.to_s};
+              if(typeof(_original_#{method})!='undefined') {
+                define('#{method}', _original_#{method});
+                delete BountySource._original_#{method};
+              }
             }
           )
         end
