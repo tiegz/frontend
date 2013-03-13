@@ -292,4 +292,12 @@ with (scope('BountySource')) {
   define('payout_solution', function(id, data, callback) {
     api('/user/solutions/'+id+'/payout', 'POST', data, callback);
   });
+
+  define('get_tracker_plugins', function(callback) {
+    api('/user/tracker_plugins', callback)
+  });
+
+  define('bulk_update_tracker_plugins', function(form_data, callback) {
+    api('/user/tracker_plugins/bulk_update', 'POST', form_data, callback);
+  });
 }
