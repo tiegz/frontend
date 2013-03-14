@@ -38,7 +38,9 @@ with (scope('TrackerPlugin', 'App')) {
         )
       } else {
         render({target: loading_div},
-          div("Please link your account with Github to use this feature.")
+          div("Github Plugin requires permission to edit your public repositories to update issue titles with bounty information and labels."),
+          div("Please grant us that permission to use this feature"),
+          a({ 'class': "btn-auth btn-github large hover", style: 'margin-right: 20px', href: Github.auth_url({scope: ['public_repo']}) }, "Enable Github Plugin")
         )
       }
     })

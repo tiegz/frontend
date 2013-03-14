@@ -74,7 +74,7 @@ with (scope('Header','App')) {
     render({ into: Header.signin_buttons },
       span('Sign In with:'),
       ul(
-        li(a({ href: Github.auth_url({scope: 'public_repo'}) },   img({ src: 'images/github.png' }))),
+        li(a({ href: Github.auth_url() },   img({ src: 'images/github.png' }))),
         li(a({ href: Facebook.auth_url() }, img({ src: 'images/facebook.png' }))),
         li(a({ href: Twitter.auth_url() },  img({ src: 'images/twitter.png' }))),
         li(a({ href: '#signin/email' },     img({ src: 'images/email.png' })))
