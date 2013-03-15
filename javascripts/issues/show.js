@@ -153,8 +153,12 @@ with (scope('Show', 'Issue')) {
       )
     );
   });
-  
+
+  define('default_bounty_amount', 25);
+
   define('bounty_box', function(issue) {
+    var currency_span = label({ 'for': 'amount-input' }, '$');
+
     return div({ id: 'bounty-box' },
       div({ style: 'padding: 0 21px' }, ribbon_header("Backers")),
 
@@ -169,11 +173,11 @@ with (scope('Show', 'Issue')) {
           div({ id: 'create-bounty-errors' }),
 
           div({ 'class': 'amount' },
-            label({ 'for': 'amount-input' }, '$'),
-            text({ placeholder: "25", name: 'amount', id: 'amount-input', value: get_params().amount || '' })
+            currency_span,
+            text({ placeholder: "" + default_bounty_amount, name: 'amount', id: 'amount-input', value: get_params().amount || '' })
           ),
 
-          Payment.payment_methods({ style: 'margin: 10px 0;', value: get_params().payment_method }),
+          Payment.payment_methods({ style: 'margin: 10px 0;', value: get_params().payment_method, currency_element: currency_span }),
 
           submit({ 'class': 'blue' }, 'Create Bounty')
         )
@@ -183,7 +187,7 @@ with (scope('Show', 'Issue')) {
 
   define('create_bounty', function(issue, form_data) {
     var payment_data = {
-      amount: form_data.amount,
+      amount: form_data.amount || default_bounty_amount,
       payment_method: form_data.payment_method,
       item_number: 'issues/' + issue.id,
       success_url: window.location.href.split('#')[0] + issue.frontend_path + '/bounties/:item_id/receipt',

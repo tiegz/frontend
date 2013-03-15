@@ -1,5 +1,7 @@
 with (scope('Pledge', 'Fundraiser')) {
 
+  define('default_pledge_amount', 25);
+
   route('#fundraisers/:fundraiser_id/pledge', function(fundraiser_id) {
     Pledge.errors_div = div({ style: 'width: 500px;' });
 
@@ -25,6 +27,8 @@ with (scope('Pledge', 'Fundraiser')) {
       // require the fundraiser to be published
       if (!fundraiser.published) return render({ into: target_div }, error_message('Fundraiser has not been published.'));
 
+      var currency_span = span({ style: 'font-size: 30px; vertical-align: middle; padding-right: 5px;' }, '$');
+
       render({ into: target_div },
         Columns.create({ show_side: false }),
 
@@ -36,14 +40,14 @@ with (scope('Pledge', 'Fundraiser')) {
 
             fieldset(
               label('Pledge Amount:'),
-              span({ style: 'font-size: 30px; vertical-align: middle; padding-right: 5px;' }, '$'),
-              input({ id: 'pledge-amount', style: 'width: 240px; display: inline-block;', autofocus: true, name: 'amount', placeholder: '25', value: params.amount||'' })
+              currency_span,
+              input({ id: 'pledge-amount', style: 'width: 240px; display: inline-block;', autofocus: true, name: 'amount', placeholder: ''+default_pledge_amount, value: params.amount||'' })
             ),
 
             // payment method selection
             fieldset(
               label('Payment Source:'),
-              Payment.payment_methods({ style: 'vertical-align: top;', value: params.payment_method })
+              Payment.payment_methods({ style: 'vertical-align: top;', value: params.payment_method, currency_element: currency_span })
             ),
 
             // rewards table
@@ -165,7 +169,7 @@ with (scope('Pledge', 'Fundraiser')) {
     }
 
     var payment_data = {
-      amount:  form_data.amount,
+      amount:  form_data.amount || default_pledge_amount,
       payment_method: form_data.payment_method,
       item_number: 'fundraisers/' + fundraiser.id + (parseInt(form_data.reward_id) > 0 ? '/'+form_data.reward_id : ''),
       success_url: window.location.href.split('#')[0] + '#fundraisers/'+fundraiser.id+'/pledges/:item_id/receipt',
