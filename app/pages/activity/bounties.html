@@ -9,7 +9,11 @@
   Need something fixed? <a href="/search">Search for issues</a> and place bounties on them!
 </div>
 
-<table class="table table-striped">
+<div class="alert alert-info" ng-show="bounties.length <= 0">
+  <a href="/faq">Read about Bounties in the FAQ.</a>
+</div>
+
+<table class="table table-striped" ng-show="bounties.length > 0">
   <thead>
   <tr>
     <th>Tracker</th>

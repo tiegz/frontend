@@ -10,7 +10,11 @@
   <div class="alert"><strong>Hey!</strong> The creator of one of the fundraisers that you backed needs information from you.</div>
 </div>
 
-<table class="table table-striped">
+<div class="alert alert-info" ng-show="pledges.length <= 0">
+  <a href="/faq">Read about Pledges in the FAQ.</a>
+</div>
+
+<table class="table table-striped" ng-show="pledges.length > 0">
   <thead>
   <tr>
     <th>Fundraiser</th>
